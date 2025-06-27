@@ -11,12 +11,12 @@ def run_cmd(cmd, cwd=None):
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return result.stdout.strip(), result.stderr.strip()
 
-#hash del commit actual 
+#hash del commit local  
 def get_local_commit():
     out, err = run_cmd("git rev-parse HEAD", cwd=REPO_DIR)
     return out
 
-#hash del último commit 
+#hash del último commit remoto 
 def get_remote_commit():
     cmd = f"git ls-remote origin refs/heads/{BRANCH}"
     out, err = run_cmd(cmd, cwd=REPO_DIR)
@@ -39,12 +39,27 @@ def monitor_repo():
         current_remote = get_remote_commit()
         local_commit = get_local_commit()
 
-        # Compara los commits
         if current_remote != local_commit:
-            print(f"\nNuevo commit disponible: {current_remote}")
-            print(f"Commit local actual: {local_commit}")
+            print(f"\nNuevo commit detectado:")
+            print(f"Remoto: {current_remote}")
+            print(f"Local:  {local_commit}")
+
+            print("\nEjecutando git pull...")
+            out, err = run_cmd("git pull", cwd=REPO_DIR)
+            print(out or err)
+
+            print("\n Aplicando manifiestos de Kubernetes...")
+            manifests_dir = os.path.join(REPO_DIR, "manifests")
+
+            deploy_out, deploy_err = run_cmd("kubectl apply -f deployment.yaml", cwd=manifests_dir)
+            print(deploy_out or deploy_err)
+
+            service_out, service_err = run_cmd("kubectl apply -f service.yaml", cwd=manifests_dir)
+            print(service_out or service_err)
+
+            print("Se aplicaron los manifiestos correctamente.")
         else:
-            print("Sin nuevos commits en la rama principal")
+            print("Sin nuevos commits.")
 
 if __name__ == "__main__":
     monitor_repo()
