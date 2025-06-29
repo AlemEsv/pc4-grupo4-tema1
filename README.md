@@ -8,7 +8,7 @@
 >
 ---
 
-Siguiendo la documentación de minikube en: [minikube_docs](https://minikube.sigs.k8s.io/docs/)
+Repositorio que despliega el sitio web: [app-manifest](https://github.com/AlemEsv/app-manifests)
 
 ## Índice
 
@@ -20,9 +20,10 @@ Siguiendo la documentación de minikube en: [minikube_docs](https://minikube.sig
 ## Pre-requisitos
 
 - Instalar [**Chocolatey**](https://chocolatey.org/) Package manager.
-- Instalar [**Docker-desktop**]([https://chocolatey.org/](https://docs.docker.com/desktop/setup/install/windows-install/))
+- Instalar [**Docker-desktop**](https://docs.docker.com/desktop/setup/install/windows-install/)
 ## Requisitos
 
+Siguiendo la documentación de minikube en: [minikube_docs](https://minikube.sigs.k8s.io/docs/).
 Este proyecto está ejecutandose en equipos con sistemas operativos Windows, con el avance de los sprints veremos opciones para correrlo en linux.
 
 Desde una terminal, correr los siguientes comandos para tener tanto el proyecto para el monitorieo como minikube instalados en nuestro equipo:
