@@ -10,6 +10,13 @@
 
 Siguiendo la documentación de minikube en: [minikube_docs](https://minikube.sigs.k8s.io/docs/)
 
+## Índice
+
+- [Requisitos](#requisitos)
+- [Instalación General](#instalación-general)
+- [Instalación con Makefile](#instalación-usando-el-makefile)
+- [Herramientas usadas](#herramientas)
+
 ## Pre-requisitos
 
 - Instalar [**Chocolatey**](https://chocolatey.org/) Package manager.
@@ -32,6 +39,28 @@ minikube version
 # inicialmente el cluster estará apagado.
 minikube status
 ```
+
+## Videos grupales
+
+- Sprint-1: [**Video Sprint 1**](https://drive.google.com/file/d/1-30PtTELNW6knPTHX6XkzuL55M5NAowj/view?usp=sharing)
+
+- Sprint-2: [**Video Sprint 2(falta)**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
+
+- Sprint-3: [**Video Sprint 3(falta)**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
+
+## Herramientas
+
+### 1. flake8
+
+* **flake8**: Verifica código en Python por incorrecta sintáxis y malas prácticas.
+
+```bash
+flake8 -r scripts/
+```
+
+### 2. Pytest
+
+Framework de pruebas para python, usado para asegurar buenas pruebas en los scripts `validate_manifest.py`, `git_monitor.py`, pruebas de integración y pruenas E2E.
 
 ## Instalación General
 
