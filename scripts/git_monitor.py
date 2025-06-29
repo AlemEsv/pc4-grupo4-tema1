@@ -4,11 +4,16 @@ import subprocess
 
 REPO_DIR = "../../app-manifests"
 BRANCH = "main"
-CHECK_INTERVAL = 10  # verifica cada 10 segundos
+CHECK_INTERVAL = 30  # verifica cada 10 segundos
 LOG_FILE = "monitor_errors.log"
+METRICS_FILE = "monitor_metrics.log"
 
 def log_error(msg):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {msg}\n")
+
+def log_metrics(msg):
+    with open(METRICS_FILE, "a", encoding="utf-8") as f:
         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {msg}\n")
 
 def run_cmd(cmd, cwd=None):
@@ -26,6 +31,48 @@ def get_remote_commit():
     cmd = f"git ls-remote origin refs/heads/{BRANCH}"
     out, err = run_cmd(cmd, cwd=REPO_DIR)
     return out.split('\t')[0] if out else None
+
+def get_commit_timestamp(commit_hash):
+    """Obtener timestamp del commit"""
+    out, err = run_cmd(f"git log --format=%ct -1 {commit_hash}", cwd=REPO_DIR)
+    return int(out) if out else None
+
+def run_e2e_tests():
+    """Ejecutar pruebas E2E"""
+    print("\nEjecutando pruebas E2E...")
+    try:
+        # Ejecutar el script de pruebas E2E sin capturar output (para ver en tiempo real)
+        result = subprocess.run(
+            ["python", "../tests/e2e/e2e-tests.py"],
+            cwd=os.path.dirname(__file__),
+            timeout=180
+        )
+        
+        if result.returncode == 0:
+            print("Pruebas E2E completadas exitosamente")
+            return True
+        else:
+            print("Pruebas E2E fallaron")
+            log_error(f"Pruebas E2E fallaron con código: {result.returncode}")
+            return False
+            
+    except subprocess.TimeoutExpired:
+        print("Timeout en pruebas E2E (180s)")
+        log_error("Timeout en pruebas E2E")
+        return False
+    except Exception as e:
+        print(f"Error ejecutando pruebas E2E: {e}")
+        log_error(f"Error ejecutando pruebas E2E: {e}")
+        return False
+
+def wait_for_deployment():
+    """Esperar a que el despliegue esté listo"""
+    out, err = run_cmd("kubectl wait --for=condition=available deployment/python-flask --timeout=180s")
+    if err:
+        log_error(f"Error esperando al despliegue: {err}")
+        return False
+    else:
+        return True
 
 #mostrar si hay nuevos commit
 def monitor_repo():
@@ -50,6 +97,13 @@ def monitor_repo():
             print(f"Remoto: {current_remote}")
             print(f"Local:  {local_commit}")
 
+            # Iniciar medición de Lead Time
+            deployment_start = time.time()
+            commit_timestamp = get_commit_timestamp(current_remote)
+            lead_time = deployment_start - commit_timestamp if commit_timestamp else 0
+            
+            log_metrics(f"DEPLOYMENT_START - Commit: {current_remote[:8]} - Lead Time: {lead_time:.2f}s")
+
             print("\nEjecutando git pull...")
             out, err = run_cmd("git pull", cwd=REPO_DIR)
             if err:
@@ -70,6 +124,31 @@ def monitor_repo():
             print(service_out or service_err)
 
             print("Se aplicaron los manifiestos correctamente.")
+
+            # Esperar que el deployment esté listo
+            if not wait_for_deployment():
+                log_metrics(f"DEPLOYMENT_FAILED - Commit: {current_remote[:8]} - Deployment not ready")
+                continue
+
+            # Ejecutar pruebas E2E
+            if not run_e2e_tests():
+                log_metrics(f"E2E_FAILED - Commit: {current_remote[:8]}")
+                continue
+
+             # Calcular Cycle Time (tiempo total hasta validación exitosa)
+            cycle_time = time.time() - deployment_start
+            
+            # Registrar métricas exitosas
+            log_metrics(f"Despliegue exitoso - Commit: {current_remote[:8]} - Lead Time: {lead_time:.2f}s - Cycle Time: {cycle_time:.2f}s")
+            
+            # Validar umbrales
+            if lead_time > 300:  # 5 minutos
+                log_metrics(f"Lead time excesivo: {lead_time:.1f}s > 300s")
+            if cycle_time > 600:  # 10 minutos
+                log_metrics(f"Cycle time excesivo: {cycle_time:.1f}s > 600s")
+            
+            print(f"\nDespliegue completo exitoso!")
+            print(f"Lead Time: {lead_time:.1f}s | Cycle Time: {cycle_time:.1f}s")
         else:
             print("Sin nuevos commits.")
 
