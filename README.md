@@ -13,36 +13,32 @@ Siguiendo la documentación de minikube en: [minikube_docs](https://minikube.sig
 ## Pre-requisitos
 
 - Instalar [**Chocolatey**](https://chocolatey.org/) Package manager.
-- 20GB de espacio en disco.
-- Tener un **contenedor** de Docker o un gestor de **máquinas virtuales**.
-
+- Instalar [**Docker-desktop**]([https://chocolatey.org/](https://docs.docker.com/desktop/setup/install/windows-install/))
 ## Requisitos
 
 Este proyecto está ejecutandose en equipos con sistemas operativos Windows, con el avance de los sprints veremos opciones para correrlo en linux.
 
-Desde una terminal con permisos de administrador, correr los siguientes comandos:
+Desde una terminal, correr los siguientes comandos para tener tanto el proyecto para el monitorieo como minikube instalados en nuestro equipo:
 
 ```bash
 choco install minikube #instala versión más actual de minikube
-minikube start
-minikube version #verifica si inició correctamente
+git clone https://github.com/AlemEsv/app-manifests.git
 ```
 
-Las imagenes de docker que necesitamos correr deben estar dentro de minikube, no desde nuestro computador, por lo que se debe ejecutar el siguiente comando:
+Para verificar la instalación de minikube:
 
 ```bash
-minikube -p minikube docker-env | Invoke-Expression
+minikube version
+# inicialmente el cluster estará apagado.
+minikube status
 ```
 
-Para verificar cada una de las imagenes instaladas:
+## Instalación General
+
+Asegurarse de tener Docker-desktop ejecutando en segundo plano para poder inicializar el cluster.
 
 ```bash
-docker image ls
-```
-
-## Instalación
-
-```bash
+minikube start --driver=docker
 docker build -t python-flask:latest .
 ```
 
@@ -53,7 +49,7 @@ kubectl apply -f ./manifests/deployment.yaml
 kubectl apply -f ./manifests/service.yaml
 ```
 
-Por lo que se creará corretamente tanto los servicios como los pods
+Verificamos que los pods estén corriendo y el servicio haya sido desplegado con exito:
 
 ```bash
 # mostrará 4 pods creados
@@ -62,10 +58,31 @@ kubectl get pods
 kubectl get svc
 ```
 
-Por ultimo ejecutamos el comando para conocer el url con la que se levanta la aplicación:
+Por ultimo ejecutamos el comando para conocer el url con la que se desplegará la aplicación:
 
 ```bash
 minikube service python-flask-service --url
 ```
 
+Para poder dar de baja el servicio orquestado por minikube, colocaremos el siguiente comando:
 
+```bash
+kubectl delete all --all
+minikube stop
+```
+
+## Instalación usando el Makefile
+
+Para inicializar nuestro cluster de minikube dentro de docker-desktop
+```bash
+make start
+```
+Luego desplegamos la aplicación:
+```bash
+make build
+make deploy
+```
+y para poder dar de baja el servicio
+```bash
+make clean
+```
