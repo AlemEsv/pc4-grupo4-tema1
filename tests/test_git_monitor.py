@@ -1,7 +1,7 @@
-import pytest
 from unittest.mock import patch
-from scripts.git_monitor import run_cmd, get_local_commit, get_remote_commit, log_error, LOG_FILE
+from scripts.git_monitor import run_cmd, get_local_commit, get_remote_commit, log_error
 import scripts.git_monitor
+
 
 def test_run_cmd_git_rev_parse():
     # Simulamos que subprocess.run devuelve el hash de commit f0c2a8b1234567890abcdef
@@ -12,17 +12,20 @@ def test_run_cmd_git_rev_parse():
         assert stdout == "f0c2a8b1234567890abcdef"
         assert stderr == ""
 
+
 def test_get_local_commit():
-    # Mockeamos run_cmd dentro de git_monitor 
+    # Mockeamos run_cmd dentro de git_monitor
     with patch("scripts.git_monitor.run_cmd") as mock_run:
         mock_run.return_value = ("asdasdasd", "")
         assert get_local_commit() == "asdasdasd"
+
 
 def test_get_remote_commit():
     # salida de git ls-remote
     with patch("scripts.git_monitor.run_cmd") as mock_run:
         mock_run.return_value = ("asdasdasd\trefs/heads/main", "")
         assert get_remote_commit() == "asdasdasd"
+
 
 def test_log_error(tmp_path):
     log_file = tmp_path / "monitor_errors.log"
