@@ -45,9 +45,9 @@ minikube status
 
 - Sprint-1: [**Video Sprint 1**](https://drive.google.com/file/d/1-30PtTELNW6knPTHX6XkzuL55M5NAowj/view?usp=sharing)
 
-- Sprint-2: [**Video Sprint 2(falta)**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
+- Sprint-2: [**Video Sprint 2**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
 
-- Sprint-3: [**Video Sprint 3(falta)**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
+- Sprint-3: [**Video Sprint 3**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
 
 ## Herramientas
 
@@ -111,6 +111,11 @@ Luego desplegamos la aplicación:
 ```bash
 make build
 make deploy
+
+# verifica el estado de los pods y el servicio
+make status
+# muestra los logs al desplegar la aplicación
+make logs
 ```
 y para poder dar de baja el servicio
 ```bash
