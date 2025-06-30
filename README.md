@@ -4,7 +4,7 @@
 >
 > 1. Cinver Alem Espinoza Valera
 >
-> 2. Benjamin Joel Seminario Serna
+> 2. Joel Benjamin Seminario Serna
 >
 ---
 
