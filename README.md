@@ -44,11 +44,11 @@ minikube status
 
 ## Videos grupales
 
-- Sprint-1: [**Video Sprint 1**](https://drive.google.com/file/d/1-30PtTELNW6knPTHX6XkzuL55M5NAowj/view?usp=sharing)
+- [**Video Sprint 1**](https://drive.google.com/file/d/1-30PtTELNW6knPTHX6XkzuL55M5NAowj/view?usp=sharing)
 
-- Sprint-2: [**Video Sprint 2**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
+- [**Video Sprint 2**](https://drive.google.com/file/d/1qTVA4tNJcs28HX3VMUCkSAreZabxeLB3/view?usp=sharing)
 
-- Sprint-3: [**Video Sprint 3**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
+- [**Video Sprint 3**](https://drive.google.com/drive/folders/17LHca0hkqFgUesVOaw6JTp_Z-2xtlv5w)
 
 ## Herramientas
 
