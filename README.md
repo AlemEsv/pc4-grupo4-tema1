@@ -13,9 +13,10 @@ Repositorio de despliegue para la aplicación: [app-manifest](https://github.com
 ## Índice
 
 - [Requisitos](#requisitos)
+- [Herramientas usadas](#herramientas)
 - [Instalación General](#instalación-general)
 - [Instalación con Makefile](#instalación-usando-el-makefile)
-- [Herramientas usadas](#herramientas)
+- [Hooks personalizados](#git-hooks)
 
 ## Pre-requisitos
 
@@ -104,10 +105,13 @@ minikube stop
 ## Instalación usando el Makefile
 
 Para inicializar nuestro cluster de minikube dentro de docker-desktop
+
 ```bash
 make start
 ```
+
 Luego desplegamos la aplicación:
+
 ```bash
 make build
 make deploy
@@ -117,7 +121,40 @@ make status
 # muestra los logs al desplegar la aplicación
 make logs
 ```
+
 y para poder dar de baja el servicio
+
 ```bash
 make clean
 ```
+
+## Git Hooks
+
+### Pre-commit
+
+Decidimos versionar los hooks de Git para mejorar su trazabilidad y facilitar su distribución entre el equipo (mediante git pull).
+
+Con este enfoque, los hooks no se almacenan en la ubicación predeterminada hooks (que no permite versionado), sino en el directorio git-hooks. Para que todos los colaboradores puedan utilizar estos hooks versionados, es necesario configurar Git para que reconozca esta nueva ubicación personalizada, lo cual se logra ejecutando el siguiente comando:
+
+```bash
+git config core.hooksPath git-hooks
+```
+
+#### **Funcionalidades**
+
+- Verificación el nombrado de ramas
+  - Valida que el nombre de la rama siga las convenciones del proyecto (`feature/*`, `fix/*`, `docs/*`)
+  - **Ejemplo válido**: `feature/readme-update`, `fix/flask-app`
+  - **Ejemplo inválido**: `main`, `rama2/f`, `ramita/feat_1`
+
+- Validación de manifiestos
+  - **Archivos verificados**: Todos los `.yaml` en la carpeta `manifests/`
+  - Si hay errores de sintaxis YAML, el commit se rechaza
+
+- Linting de código Python
+  - **Reglas aplicadas**:
+    - `E9`: Errores de sintaxis
+    - `F63`: Comparaciones inválidas
+    - `F7`: Errores de sintaxis en f-strings
+    - `F82`: Variables no definidas
+  - **Archivos verificados**: Solo archivos `.py` modificados en el commit
