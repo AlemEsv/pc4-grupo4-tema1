@@ -8,7 +8,7 @@
 >
 ---
 
-Repositorio que despliega el sitio web: [app-manifest](https://github.com/AlemEsv/app-manifests)
+Repositorio de despliegue para la aplicación: [app-manifest](https://github.com/AlemEsv/app-manifests)
 
 ## Índice
 
