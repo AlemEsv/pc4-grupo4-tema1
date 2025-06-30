@@ -1,6 +1,7 @@
 import subprocess
 import sys
 
+
 def run_cmd(cmd, timeout=30):
     try:
         result = subprocess.run(cmd, shell=True, text=True,
@@ -8,6 +9,7 @@ def run_cmd(cmd, timeout=30):
         return result.returncode == 0, result.stdout.strip(), result.stderr.strip()
     except subprocess.TimeoutExpired:
         return False, "", "Timeout"
+
 
 def test_pod_running_and_ready():
     print("Verificando estado de los pods...")
@@ -28,6 +30,7 @@ def test_pod_running_and_ready():
 
     print("Pods corriendo y listos")
     return True
+
 
 def test_deployment_ready():
     print("Verificando deployment...")
@@ -58,6 +61,7 @@ def test_deployment_ready():
         print(f"Error al interpretar datos del deployment: {e}")
         return False
 
+
 def test_service_configured():
     print("Verificando service...")
 
@@ -81,6 +85,7 @@ def test_service_configured():
 
     print("Service correctamente configurado como NodePort")
     return True
+
 
 def main():
     print("Ejecutando pruebas de integración...")
@@ -110,6 +115,7 @@ def main():
     else:
         print("\nTodas las pruebas pasaron")
         sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
